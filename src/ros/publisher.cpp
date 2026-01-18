@@ -1,18 +1,27 @@
 /**
  * @file publisher.cpp
- * @brief ROS Publisher implementations.
+ * @brief Handles publishing of sensor data.
  */
 
 #include "ros_context.h"
+#include "flow_sensor.h"
+#include <Arduino.h>
 
-extern class FlowSensor flow_driver;
+extern FlowSensor flow_driver;
 
 void timer_callback(rcl_timer_t * timer, int64_t last_call_time) {
     if (timer != NULL) {
         float flow = flow_driver.read_flow_rate();
+        // Only publish valid readings
         if(flow >= 0) {
             ros_ctx.flow_msg.data = flow;
-            rcl_publish(&ros_ctx.flow_pub, &ros_ctx.flow_msg, NULL);
+            
+            // FIX: Capture return value to resolve "warn_unused_result"
+            rcl_ret_t rc = rcl_publish(&ros_ctx.flow_pub, &ros_ctx.flow_msg, NULL);
+            
+            if (rc != RCL_RET_OK) {
+                log_e("Failed to publish flow rate");
+            }
         }
     }
 }
@@ -25,7 +34,6 @@ void setup_publishers() {
         "flow_rate"
     );
 
-    // Timer setup
     rclc_timer_init_default(
         &ros_ctx.timer,
         &ros_ctx.support,

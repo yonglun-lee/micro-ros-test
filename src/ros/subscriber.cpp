@@ -1,32 +1,34 @@
 /**
  * @file subscriber.cpp
- * @brief ROS Subscriber implementations.
+ * @brief Handles incoming ROS 2 messages.
  */
 
+#include <Arduino.h>
 #include "ros_context.h"
-#include "esp_log.h"
+#include "pump.h"
 
-// Import global pump driver
-extern class Pump pump_driver;
+extern Pump pump_driver;
 
-// Callback for Pump PWM
 void pump_callback(const void * msgin) {
     const std_msgs__msg__Float32 * msg = (const std_msgs__msg__Float32 *)msgin;
-    ESP_LOGI("ROS", "Pump Speed: %.2f", msg->data);
+    log_i("ROS 2 Command: Set Pump Effort to %.2f", msg->data);
     pump_driver.set_effort(msg->data);
 }
 
 void setup_subscribers() {
-    // Initialize subscription
-    rcl_subscription_options_t opts = rcl_subscription_get_default_options();
+    // FIX: Removed 'opts' and '&opts' to match the function signature
+    // rclc_subscription_init_default(sub, node, type, topic)
     
-    rclc_subscription_init_default(
+    rcl_ret_t rc = rclc_subscription_init_default(
         &ros_ctx.pump_sub,
         &ros_ctx.node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Float32),
-        "cmd_pump",
-        &opts
+        "cmd_pump"
     );
 
-    // Add to executor in main.cpp
+    if (rc != RCL_RET_OK) {
+        log_e("Failed to create pump subscriber");
+    } else {
+        log_d("Pump subscriber created");
+    }
 }

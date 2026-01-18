@@ -5,17 +5,15 @@
 
 #pragma once
 
+#include <Arduino.h>
 #include <rcl/rcl.h>
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
 
-// Include message types (Assumed standard or generated)
+// Standard Message Types
 #include <std_msgs/msg/float32.h>
 #include <std_msgs/msg/bool.h>
 #include <std_srvs/srv/set_bool.h>
-// Note: For Action, we assume a custom type or standard type is available.
-// Using a placeholder struct for the example if headers aren't generated.
-// #include <sprayer_interfaces/action/move_actuator.h>
 
 struct RosContext {
     rcl_allocator_t allocator;
@@ -36,11 +34,7 @@ struct RosContext {
     rcl_service_t valve_srv;
     std_srvs__srv__SetBool_Request valve_req;
     std_srvs__srv__SetBool_Response valve_res;
-
-    // Actions (Placeholder structures used)
-    // rcl_action_server_t actuator_action;
 };
 
-// Global context accessible by components if needed, 
-// though dependency injection is preferred.
+// Global instance declaration
 extern RosContext ros_ctx;

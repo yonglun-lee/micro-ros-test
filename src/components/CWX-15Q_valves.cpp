@@ -1,42 +1,28 @@
-/**
- * @file valves.cpp
- * @brief Driver for CWX-15Q Motorized Valves.
- */
-
-#include "driver/gpio.h"
+#include "valves.h"
 #include "pins.h"
 
-class ValveManager {
-public:
-    void init() {
-        gpio_config_t io_conf = {};
-        io_conf.intr_type = GPIO_INTR_DISABLE;
-        io_conf.mode = GPIO_MODE_OUTPUT;
-        io_conf.pin_bit_mask = (1ULL << PIN_VALVE_1) | (1ULL << PIN_VALVE_2) | (1ULL << PIN_VALVE_3);
-        io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
-        io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
-        gpio_config(&io_conf);
-        
-        // Default close
-        close_all();
-    }
+void ValveManager::init() {
+    pinMode(PIN_VALVE_1, OUTPUT);
+    pinMode(PIN_VALVE_2, OUTPUT);
+    pinMode(PIN_VALVE_3, OUTPUT);
+    close_all();
+    log_d("Valves Initialized");
+}
 
-    void set_valve(int id, bool open) {
-        gpio_num_t pin;
-        switch (id) {
-            case 1: pin = PIN_VALVE_1; break;
-            case 2: pin = PIN_VALVE_2; break;
-            case 3: pin = PIN_VALVE_3; break;
-            default: return;
-        }
-        gpio_set_level(pin, open ? 1 : 0);
+void ValveManager::set_valve(int id, bool open) {
+    int pin = -1;
+    switch (id) {
+        case 1: pin = PIN_VALVE_1; break;
+        case 2: pin = PIN_VALVE_2; break;
+        case 3: pin = PIN_VALVE_3; break;
+        default: log_e("Invalid Valve ID: %d", id); return;
     }
+    digitalWrite(pin, open ? HIGH : LOW);
+    log_i("Valve %d %s", id, open ? "OPEN" : "CLOSED");
+}
 
-    void close_all() {
-        gpio_set_level(PIN_VALVE_1, 0);
-        gpio_set_level(PIN_VALVE_2, 0);
-        gpio_set_level(PIN_VALVE_3, 0);
-    }
-};
-
-ValveManager valve_driver;
+void ValveManager::close_all() {
+    digitalWrite(PIN_VALVE_1, LOW);
+    digitalWrite(PIN_VALVE_2, LOW);
+    digitalWrite(PIN_VALVE_3, LOW);
+}

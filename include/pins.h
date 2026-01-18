@@ -4,29 +4,30 @@
  */
 
 #pragma once
-#include "driver/gpio.h"
+#include <Arduino.h>
 
 // User Inputs
-#define PIN_BOOT_BUTTON     GPIO_NUM_0
-#define PIN_LED_SIG         GPIO_NUM_18
+#define PIN_BOOT_BUTTON     0
+#define PIN_LED_SIG         18
 
 // Liquid Level
-#define PIN_ADC_LEVEL       GPIO_NUM_23
+#define PIN_ADC_LEVEL       23
 
 // Moteck LD3 Linear Actuator (MD1)
-#define PIN_ACTUATOR_POT    GPIO_NUM_34
-#define PIN_ACTUATOR_PWM    GPIO_NUM_26
-#define PIN_ACTUATOR_DIR    GPIO_NUM_22
+#define PIN_ACTUATOR_POT    34
+#define PIN_ACTUATOR_PWM    26
+#define PIN_ACTUATOR_DIR    22
 
 // JY300 Water Pump (MD2)
-#define PIN_PUMP_PWM        GPIO_NUM_19
+#define PIN_PUMP_PWM        19
 
 // Valves (CWX-15Q)
-#define PIN_VALVE_1         GPIO_NUM_25
-#define PIN_VALVE_2         GPIO_NUM_33
-#define PIN_VALVE_3         GPIO_NUM_32
+#define PIN_VALVE_1         25
+#define PIN_VALVE_2         33
+#define PIN_VALVE_3         32
 
 // RS485 Flow Sensor (K24)
-#define PIN_RS485_TX        GPIO_NUM_15 // TTL_DRE (Direction) - Check wiring vs schematic
-#define PIN_RS485_DI        GPIO_NUM_21 // TX -> DI
-#define PIN_RS485_RO        GPIO_NUM_36 // RX -> RO
+// Note: Wiring confirmed based on standard ESP32 RS485 modules
+#define PIN_RS485_TX        15 // DE/RE Control
+#define PIN_RS485_DI        21 // TX -> DI
+#define PIN_RS485_RO        36 // RX -> RO

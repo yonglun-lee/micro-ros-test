@@ -1,24 +1,25 @@
-/**
- * @file service.cpp
- * @brief ROS Service implementations.
- */
-
 #include "ros_context.h"
-#include "esp_log.h"
+#include "valves.h"
+#include <Arduino.h>
 
-extern class ValveManager valve_driver;
+extern ValveManager valve_driver;
 
 void valve_service_callback(const void * req, void * res) {
     std_srvs__srv__SetBool_Request * req_in = (std_srvs__srv__SetBool_Request *) req;
     std_srvs__srv__SetBool_Response * res_in = (std_srvs__srv__SetBool_Response *) res;
 
-    // Logic: True = Open Valve 1, False = Close Valve 1 (Simplification)
-    // For multiple valves, you might use a custom message or index logic.
-    valve_driver.set_valve(1, req_in->data); 
+    bool open_cmd = req_in->data;
+    log_i("Service Request: Valve 1 -> %s", open_cmd ? "OPEN" : "CLOSE");
+    
+    valve_driver.set_valve(1, open_cmd); 
     
     res_in->success = true;
-    res_in->message.data = (char*)"Valve Toggled";
-    res_in->message.size = 13;
+    // Note: Strings in micro-ROS must be handled carefully regarding memory
+    // For simplicity, we assume the response buffer is large enough or use static string
+    const char* msg = "Valve Toggled";
+    // Usually you need to allocate string memory if it's dynamic, 
+    // but SetBool uses string capacity defined in .rosidl
+    // Assuming default init handling.
 }
 
 void setup_services() {

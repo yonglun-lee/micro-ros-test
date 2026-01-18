@@ -1,29 +1,25 @@
 /**
  * @file action.cpp
- * @brief ROS Action Server for Linear Actuator.
+ * @brief ROS Action Server Implementation (Placeholder).
  */
 
 #include "ros_context.h"
-#include "esp_log.h"
+#include "linear_actuator.h"
 
-extern class LinearActuator actuator_driver;
+extern LinearActuator actuator_driver;
 
-// Note: Full Action Server implementation in Micro-ROS C is verbose.
-// This is a skeleton of how it connects to the actuator driver.
+// Note: To use Actions, you must generate the C headers for your custom action type
+// (e.g., sprayer_interfaces/action/move_actuator.h) and include them here.
+// As these are not standard, this section is commented out to allow building.
 
-void action_goal_callback(void * goal_handle, void * args) {
-    // 1. Get Goal Position
-    // 2. Accept Goal
-}
+/*
+#include <sprayer_interfaces/action/move_actuator.h>
 
-void action_update_task(void * args) {
-    // Run in loop:
-    // 1. Get current pos: actuator_driver.get_position_raw();
-    // 2. PID Control: actuator_driver.drive(pid_output);
-    // 3. Publish Feedback
-    // 4. If target reached, Succeed.
+void action_callback(const void * goal_handle) {
+    // Action Logic Here
 }
 
 void setup_actions() {
-    // rclc_action_server_init_default(...)
+    // Action Server Init Logic Here
 }
+*/
